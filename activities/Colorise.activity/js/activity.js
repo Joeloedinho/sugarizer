@@ -20,15 +20,29 @@ define(["sugar-web/activity/activity", "sugar-web/env", "webL10n"], function (ac
             // Process localize event
             window.addEventListener("localized", function() {
 	            document.getElementById("welcome").innerHTML = "<h3>"+webL10n.get("Hello", {name:currentenv.user.name})+"<br>"+webL10n.get("Hope", )+webL10n.get("you")+webL10n.get("are")+webL10n.get("prepared")+webL10n.get("to")+webL10n.get("learn")+webL10n.get("some")+webL10n.get("colors")+ webL10n.get("today")+  ":)"+"</h3>";
+               
                 //init
 			    initialize = function() {
-			    	var btn = document.querySelector(".btn-info").innerHTML =webL10n.get("Display")+webL10n.get("Color");
+			    	var btn = document.querySelector(".btn-info").innerHTML = webL10n.get("Display")+webL10n.get("Color");
 			    	var hexName = document.querySelector(".hex-sec").innerHTML = "<h5>Hex " + "" +webL10n.get("Name") + '<br>' + '<br>' + "</h5>";
 			    	var colorName = document.querySelector(".name-sec").innerHTML = "<h5>"+webL10n.get("Color")+webL10n.get("Name") + '<br>' + "</h5>";
 			    	var colorHead = document.querySelector("#color-head").innerHTML = "<h5>"+webL10n.get("Color")+webL10n.get("Display")+ "</h5>";
 			    }
 			    initialize();
-	        });
+
+			    // Load from datatore
+				if (!environment.objectId) {
+					console.log("New instance");
+				} else {
+					activity.getDatastoreObject().loadAsText(function(error, metadata, data) {
+						if (error==null && data!=null) {
+							//hexColor = JSON.parse(data);
+							document.getElementById("getColorName").value = hexColor["color"];
+							getColorName();
+						}
+					});
+				} 
+			});	 
 
 	        // Get the color and display it
 	        var colors = {
@@ -178,31 +192,65 @@ define(["sugar-web/activity/activity", "sugar-web/env", "webL10n"], function (ac
 			    "gray97":"f7f7f7"
 	        };
 
-	        
+	        changeColors = function() {
+	        	var letters = '0123456789ABCDEF';
+				var color = '#';
+				    for (var i = 0; i < 6; i++) {
+				        color1 += letters[Math.floor(Math.random() * 16)];
+				    }
+			};
 
-	        getColorName = function() {	        	
+	        getColorName = function() {	
+	                	
 				var x = document.getElementById("getColorName").value;
 					for (var key in colors) {
 					    var value = colors[key];  
 						if (x.toLowerCase() == key || x.toLowerCase() == value) {
-						    var hex = document.querySelector(".hex-sec").innerHTML = document.querySelector(".hex-sec").innerHTML = "<h5> Hex "+ webL10n.get("Name") + "<br>"+ "<br>" + value.toUpperCase() + "</h5>";
+						    var hex = document.querySelector(".hex-sec").innerHTML = document.querySelector(".hex-sec").innerHTML = "<h5> Hex "+ webL10n.get("Name") + "<br>"+ "<br>" + "<span id='cid'>"+value.toUpperCase()+"</span>" + "</h5>";
 						    document.querySelector(".hex-sec").style.color = key;
 						    var name = document.querySelector(".name-sec").innerHTML = document.querySelector(".name-sec").innerHTML = "<h5>"+webL10n.get("Color")+ webL10n.get("Name") + "<br>"+ "<br>"+ key.toUpperCase() + "</h5>";
 						    document.querySelector(".name-sec").style.color = key;
 						    document.querySelector(".color-display").style.background = value;
 			                //var y = document.querySelector(".color-display");	
 				        }
-				    } 				     		    
+				    }
 		    };
+
+		    
+		    storeColors = function() {
+				hexColor = {
+					"color": document.getElementById("getColorName").value
+				}
+		    }
+
+			// Save in Journal on Stop
+			document.getElementById("stop-button").addEventListener('click', function (event) {
+				console.log("writing...");
+				var jsonData = JSON.stringify(hexColor);
+				console.log(hexColor)
+				console.log(jsonData);
+				activity.getDatastoreObject().setDataAsText(jsonData);
+				activity.getDatastoreObject().save(function (error) {
+					if (error === null) {
+						console.log("write done.");
+					} else {
+						console.log("write failed.");
+					}
+				});
+			});
 
 	        //Click event
 		    document.getElementById("display-btn").addEventListener('click', function(event) {
-		        getColorName();
-                var get = document.getElementById("getColorName").value = "";
+				storeColors();
+				getColorName();
+		        //colors.push(currentenv.user.colorvalue);
+				
+                var get = document.getElementById("getColorName").value = ""; 
             });
 
             document.addEventListener('keypress', function(event) {
 	            if (event.keyCode === 13 || event.which === 13) {
+					storeColors();
 		            getColorName();
 		            var get = document.getElementById("getColorName").value = "";
 	            }

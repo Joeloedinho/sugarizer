@@ -23,8 +23,8 @@ body {
 .col-sm {
 	border: 2px groove black;
 	margin: 1px;
-	padding-top: 3%;
-	padding-bottom: 3%;
+	padding-top: 2%;
+	padding-bottom: 2%;
 }
 
 .jumbotron {
@@ -33,4 +33,17 @@ body {
 	background-size: cover;
 	color: #ffffff;
 	text-align: center
+}
+
+#box {
+	width: auto;
+	height: 70px;
+	background-color: white;
+	border: 1px solid black;
+	margin: 2px;
+	margin-left: 2%;
+}
+
+.col-2 {
+	padding-top: 2%;
 }
