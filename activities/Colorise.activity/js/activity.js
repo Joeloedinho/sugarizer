@@ -24,9 +24,10 @@ define(["sugar-web/activity/activity", "sugar-web/env", "webL10n"], function (ac
                 //init
 			    initialize = function() {
 			    	var btn = document.querySelector(".btn-info").innerHTML = webL10n.get("Display")+webL10n.get("Color");
-			    	var hexName = document.querySelector(".hex-sec").innerHTML = "<h5>Hex " + "" +webL10n.get("Name") + '<br>' + '<br>' + "</h5>";
+			    	var hexName = document.querySelector(".hex-sec").innerHTML = "<h5>"+webL10n.get("Hex")+webL10n.get("Name") + '<br>' + '<br>' + "</h5>";
 			    	var colorName = document.querySelector(".name-sec").innerHTML = "<h5>"+webL10n.get("Color")+webL10n.get("Name") + '<br>' + "</h5>";
 			    	var colorHead = document.querySelector("#color-head").innerHTML = "<h5>"+webL10n.get("Color")+webL10n.get("Display")+ "</h5>";
+			    	var label = document.querySelector(".label").innerHTML = webL10n.get('Enter')+ webL10n.get("Color")+ webL10n.get('Name')+ webL10n.get("or")+ webL10n.get("Hex");
 			    }
 			    initialize();
 
@@ -36,7 +37,7 @@ define(["sugar-web/activity/activity", "sugar-web/env", "webL10n"], function (ac
 				} else {
 					activity.getDatastoreObject().loadAsText(function(error, metadata, data) {
 						if (error==null && data!=null) {
-							//hexColor = JSON.parse(data);
+							hexColor = JSON.parse(data);
 							document.getElementById("getColorName").value = hexColor["color"];
 							getColorName();
 						}
@@ -206,7 +207,7 @@ define(["sugar-web/activity/activity", "sugar-web/env", "webL10n"], function (ac
 					for (var key in colors) {
 					    var value = colors[key];  
 						if (x.toLowerCase() == key || x.toLowerCase() == value) {
-						    var hex = document.querySelector(".hex-sec").innerHTML = document.querySelector(".hex-sec").innerHTML = "<h5> Hex "+ webL10n.get("Name") + "<br>"+ "<br>" + "<span id='cid'>"+value.toUpperCase()+"</span>" + "</h5>";
+						    var hex = document.querySelector(".hex-sec").innerHTML = document.querySelector(".hex-sec").innerHTML = "<h5>"+webL10n.get("Hex")+ webL10n.get("Name") + "<br>"+ "<br>" + "<span id='cid'>"+value.toUpperCase()+"</span>" + "</h5>";
 						    document.querySelector(".hex-sec").style.color = key;
 						    var name = document.querySelector(".name-sec").innerHTML = document.querySelector(".name-sec").innerHTML = "<h5>"+webL10n.get("Color")+ webL10n.get("Name") + "<br>"+ "<br>"+ key.toUpperCase() + "</h5>";
 						    document.querySelector(".name-sec").style.color = key;
